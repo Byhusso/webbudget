@@ -1,4 +1,4 @@
-let transactions = [];
+let transactions = JSON.parse(localStorage.getItem("monthlyTransactions")) || [];
 
 function addTransaction() {
     const today = new Date();
@@ -13,6 +13,7 @@ function addTransaction() {
     const amount = parseFloat(document.getElementById("amount").value);
 
     transactions.push({ date, description, category, type, amount });
+    saveTransactions(); // Save to local storage
     updateTable();
     updateSummary();
     document.getElementById("transactionForm").reset();
@@ -39,6 +40,7 @@ function updateTable() {
 
 function deleteTransaction(index) {
     transactions.splice(index, 1);
+    saveTransactions(); // Save to local storage
     updateTable();
     updateSummary();
 }
@@ -61,3 +63,17 @@ function updateSummary() {
     document.getElementById("totalExpenses").textContent = expenses;
     document.getElementById("netBalance").textContent = netBalance;
 }
+
+function saveTransactions() {
+    localStorage.setItem("monthlyTransactions", JSON.stringify(transactions));
+}
+
+function clearLocalStorage() {
+  localStorage.removeItem("monthlyTransactions");
+  transactions = [];
+  updateTable();
+  updateSummary();
+}
+
+updateTable(); // Load and display transactions on page load
+updateSummary();
